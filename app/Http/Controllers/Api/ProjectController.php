@@ -11,7 +11,8 @@ class ProjectController extends Controller
     public function index()
     {
 
-        $project = Project::all();
+        $project = Project::with('technologies', 'category')
+            ->paginate(6);
 
         return response()->json([
             'success' => true,

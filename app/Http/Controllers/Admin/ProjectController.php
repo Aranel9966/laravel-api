@@ -26,12 +26,19 @@ class ProjectController extends Controller
 
         if ($request->has('title')) {
 
+
+            $projects = Project::where('title', 'like', "%$request->title%")
+                ->where('user_id', $user_id)
+                ->get();
+
+
             // $projects = Project::where('title', 'like', "%$request->title%")->get();
-            $projects = Project::where(function ($query) use ($request) {
-                $query->where('title', 'like', "%$request->title%");
-            })->where(function ($query) use ($user_id) {
-                $query->where('user_id', $user_id);
-            })->get();
+            // $projects = Project::where(function ($query) use ($request) {
+            //     $query->where('title', 'like', "%$request->title%");
+            // })->where(function ($query) use ($user_id) {
+            //     $query->where('user_id', $user_id);
+            // })->get();
+
             // $projects = Project::where('user_id', $user_id)->get();
         } else {
             $projects = Project::where('user_id', $user_id)->get();

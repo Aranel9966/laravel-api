@@ -10,7 +10,6 @@ class ProjectController extends Controller
 {
     public function index()
     {
-
         $project = Project::with('technologies', 'category')
             ->paginate(6);
 

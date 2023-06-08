@@ -12,10 +12,15 @@ class ProjectController extends Controller
     {
         $project = Project::with('technologies', 'category')
             ->paginate(6);
+        $formData = $request->all();
+
+        if ($request->has('title') && $formData['title'] != "") {
+            $project = Project::where('title', 'like', "%$formData[title]%")->get();
+        }
 
         return response()->json([
             'success' => true,
-            'results' => $project
+            'results' => $project,
         ]);
     }
 

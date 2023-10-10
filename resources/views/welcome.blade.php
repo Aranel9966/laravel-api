@@ -50,3 +50,87 @@
 
 
 @endsection
+
+
+
+OrderApiController:
+
+public function store(Request $request)
+{
+    $orderData = $request->all();
+    $order = new Order();
+    $order->fill($orderData);
+    $order->save();
+
+    $dishes = $orderData['dishes'];
+
+    foreach ($dishes as $dish) {
+        $quantity = $dish['quantity'];
+        for ($i = 0; $i < $quantity; $i++) {
+            $order->dishes()->attach($dish['id'], [
+                'dish_id' => $dish['id'],
+                'order_id' => $order->id,
+            ]);
+        }
+    }
+    return response()->json($request, 201);
+}
+/////////////
+
+model order:
+
+protected $fillable = ['total', 'status', 'number', 'guest_first_name', 'guest_last_name', 'guest_address', 'guest_email'];
+// protected $table = 'dish_id';
+
+public function dishes()
+{
+
+    // return $this->belongsToMany(Dish::class);
+    return $this->belongsToMany(Dish::class)
+        ->withPivot('dish_id', 'order_id');
+}
+
+///////
+api route:
+
+Route::post('orders', [OrderApiController::class, 'store']);
+//////////////////////
+
+chiamata axios
+
+placeOrder() {
+
+    const order = {
+        dishes: this.store.orderFromLocalStorage,
+        total:this.store.totalFromLocalStorage,
+        status:1,
+        number:1,
+        guest_first_name:'prova',
+        guest_last_name:'prova',
+        guest_address:'prova',
+        guest_email:'prova',
+    };
+    console.log(order)
+    axios.post('http://127.0.0.1:8000/api/orders', order)
+    .then(response => {
+        console.log('Ordine effettuato:', response.data);
+        // store.orderFromLocalStorage = [];
+    })
+    .catch(error => {
+        console.error('Si è verificato un errore durante il salvataggio dell\'ordine:', error);
+    });
+},
+
+
+
+
+
+
+
+
+
+
+
+
+
+

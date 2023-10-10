@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text('description');
             $table->text('thumb')->nullable();
             $table->string('slug', 200);
+            $table->text('cover_image')->nullable();
 
             $table->timestamps();
         });
